@@ -1,17 +1,17 @@
 <h1>Question and Answer</h1>
 <table>
   <thead>
-    <h2>Question: {{questionsWithoutAnswer[num].question}}</h2>
+    <h2>Question: {{dataService.questionsWithOutAnswer[dataService.num].question}}</h2>
   </thead>
   <tbody>
-    <input type="button" value="Give an answer" style="margin:3px;" class="btn btn-primary" (click)="giveAnswer(num)" />
+    <input type="button" value="Give an answer" style="margin:3px;" class="btn btn-primary" (click)="giveAnswer(dataService.num)" />
     <tr>
       <div *ngIf="questionMode">
         <td>
-          <input type="text" [(ngModel)]="answeredQuestion.question" class="form-control" readonly />
+          <input type="text" [(ngModel)]="dataService.answeredQuestion.question" class="form-control" readonly />
         </td>
         <td>
-          <input type="text" [(ngModel)]="answeredQuestion.answer" class="form-control" />
+          <input type="text" [(ngModel)]="dataService.answeredQuestion.answer" class="form-control" />
         </td>
         <td>
           <input type="button" value="Save" (click)="saveAnswer()" class="btn btn-success" />
@@ -32,7 +32,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let p of questions">
+    <tr *ngFor="let p of dataService.questionsWithAnswer">
         <td>{{p?.question}}</td>
         <td>{{p?.answer}}</td>
     </tr>
@@ -44,7 +44,7 @@
 
   <div class="form-group">
     <label>Question</label>
-    <input type="text" [(ngModel)]="question.question" class="form-control" />
+    <input type="text" [(ngModel)]="dataService.question.question" class="form-control" />
   </div>
   <div>
     <input type="button" value="Save" (click)="saveQuestion()" class="btn btn-success" />
