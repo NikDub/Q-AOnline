@@ -22,8 +22,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.dataService.intervalTimer();
 
     this.hubConnection= new HubConnectionBuilder().withUrl("/echo").build();
-    this.hubConnection.on('send', data=> {this.dataService.questionsWithOutAnswer.push(data);this.dataService.notifyNewQuestion();});
-    this.hubConnection.start().then(()=>console.log('Connected'));
+    this.hubConnection.on('send', data=> {this.dataService.questionsWithOutAnswer.push(data);});
+    this.hubConnection.start().then(()=>console.log('Connected echo'));
 
     this.hubConnection2= new HubConnectionBuilder().withUrl("/echo2").build();
     this.hubConnection2.on('send2', data=> {
@@ -31,18 +31,15 @@ export class AppComponent implements OnInit, OnDestroy {
       this.dataService.questionsWithAnswer.push(data); 
       this.dataService.tmp=data;  
       this.dataService.questionsWithOutAnswer.splice(this.dataService.questionsWithOutAnswer.map(e=>e.id).indexOf(this.dataService.tmp.id),1);
-      this.dataService.notifyNewAnswer();
      });
-    this.hubConnection2.start().then(()=>console.log('Connected 2 too'));
+    this.hubConnection2.start().then(()=>console.log('Connected echo2'));
     
   }
-
   ngOnDestroy() {
     if (this.dataService.intervalSub) {
       this.dataService.intervalSub.unsubscribe();
     }
   }
-
   public saveAnswer() {
     this.dataService.updateQandA(this.dataService.answeredQuestion)
         .subscribe(data => {this.hubConnection2.invoke('Echo2', data);});
@@ -50,12 +47,11 @@ export class AppComponent implements OnInit, OnDestroy {
     this.questionMode = !this.questionMode;
     this.dataService.intervalTimer();
   }
-
   public saveQuestion() {
       this.dataService.createQandA(this.dataService.question)
         .subscribe((data: QuestionAndAnswer) => this.hubConnection.invoke('Echo', data));
+    this.tableMode = !this.tableMode;
   }
-
   public giveAnswer(p: number) {
     this.dataService.answeredQuestion = this.dataService.questionsWithOutAnswer[p];
     this.questionMode = !this.questionMode;
@@ -68,18 +64,11 @@ export class AppComponent implements OnInit, OnDestroy {
       this.dataService.intervalTimer();
     }
   }
-
   public cancel() {
     this.dataService.question = new QuestionAndAnswer();
     this.tableMode = true;
   }
-
   public add() {
     this.tableMode = !this.tableMode;
   }
-
- 
 }
-
-
-//create real-time notification

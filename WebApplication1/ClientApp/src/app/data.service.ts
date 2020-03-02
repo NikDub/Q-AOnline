@@ -50,9 +50,9 @@ export class DataService {
   }
 
 
-  notifyNewAnswer(){ 
+  notifyNewAnswer(some: string){ 
     let options = { 
-      body: this.answeredQuestion.Answer,
+      body: some,
       icon: "../assets/icons/bell.png " 
     }
      this._pushNotifications.create('New Answer', options).subscribe( 
@@ -61,9 +61,9 @@ export class DataService {
     );
   }
 
-  notifyNewQuestion(){ 
+  notifyNewQuestion(some: string){ 
     let options = { 
-      body: this.question.Answer,
+      body: some,
       icon: "../assets/icons/bell.png " 
     }
      this._pushNotifications.create('New Question', options).subscribe( 

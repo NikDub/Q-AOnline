@@ -1,7 +1,7 @@
 <h1>Question and Answer</h1>
 <table>
   <thead>
-    <h2>Question: {{dataService.questionsWithOutAnswer[dataService.num].question}}</h2>
+    <h2>Question: {{dataService.questionsWithOutAnswer ? dataService.questionsWithOutAnswer[dataService.num].question : null}}</h2>
   </thead>
   <tbody>
     <input type="button" value="Give an answer" style="margin:3px;" class="btn btn-primary" (click)="giveAnswer(dataService.num)" />
@@ -14,7 +14,7 @@
           <input type="text" [(ngModel)]="dataService.answeredQuestion.answer" class="form-control" />
         </td>
         <td>
-          <input type="button" value="Save" (click)="saveAnswer()" class="btn btn-success" />
+          <input type="button" value="Save" (click)="saveAnswer();this.dataService.notifyNewAnswer(dataService.answeredQuestion.question+'\n'+dataService.answeredQuestion.answer)" class="btn btn-success" />
         </td>
       </div>
     </tr>
@@ -47,7 +47,7 @@
     <input type="text" [(ngModel)]="dataService.question.question" class="form-control" />
   </div>
   <div>
-    <input type="button" value="Save" (click)="saveQuestion()" class="btn btn-success" />
+    <input type="button" value="Save" (click)="saveQuestion(); this.dataService.notifyNewQuestion(dataService.question.question)" class="btn btn-success" />
     <input type="button" value="Cancel" (click)="cancel()" class="btn btn-warning" />
   </div>
 </ng-template>
