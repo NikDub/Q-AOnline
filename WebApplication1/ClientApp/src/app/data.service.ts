@@ -5,31 +5,25 @@ import { tap } from 'rxjs/operators'
 import { interval, Subscription } from 'rxjs'
 import { PushNotificationsService } from 'ng-push';
 
-export interface asd {
-  id?: number,
-  Question?: string,
-  Answer?: string
-}
-
 export interface PushNotification {
-  body ? : string;
-  icon ? : string;
-  tag ? : string;
-  data ? : any;
-  renotify ? : boolean;
-  silent ? : boolean;
-  sound ? : string;
-  noscreen ? : boolean;
-  sticky ? : boolean;
-  dir ? : 'auto' | 'ltr' | 'rtl';
-  lang ? : string;
-  vibrate ? : number[];
+  body?: string;
+  icon?: string;
+  tag?: string;
+  data?: any;
+  renotify?: boolean;
+  silent?: boolean;
+  sound?: string;
+  noscreen?: boolean;
+  sticky?: boolean;
+  dir?: 'auto' | 'ltr' | 'rtl';
+  lang?: string;
+  vibrate?: number[];
 }
 
 @Injectable()
 export class DataService {
-  public questionsWithAnswer: asd[];
-  public questionsWithOutAnswer: asd[];
+  public questionsWithAnswer: QuestionAndAnswer[];
+  public questionsWithOutAnswer: QuestionAndAnswer[];
   public question: QuestionAndAnswer = new QuestionAndAnswer();
   public answeredQuestion: QuestionAndAnswer = new QuestionAndAnswer();
   tmp: QuestionAndAnswer = new QuestionAndAnswer();
@@ -45,30 +39,30 @@ export class DataService {
 
 
   public loadQAndA() {
-    this.getOnlyQuestion("withAnswerOnly").subscribe((data: QuestionAndAnswer[]) => this.questionsWithAnswer = data);
-    this.getOnlyQuestion("withoutAnswer").subscribe((data: QuestionAndAnswer[]) => this.questionsWithOutAnswer = data);
+    this.getOnlyQuestion("withAnswerOnly").subscribe();
+    this.getQuestionAndAnswer("withoutAnswer").subscribe();
   }
 
 
-  notifyNewAnswer(some: string){ 
-    let options = { 
+  notifyNewAnswer(some: string) {
+    let options = {
       body: some,
-      icon: "../assets/icons/bell.png " 
+      icon: "../assets/icons/bell.png "
     }
-     this._pushNotifications.create('New Answer', options).subscribe( 
-        res => console.log(res),
-        err => console.log(err)
+    this._pushNotifications.create('New Answer', options).subscribe(
+      res => console.log(res),
+      err => console.log(err)
     );
   }
 
-  notifyNewQuestion(some: string){ 
-    let options = { 
+  notifyNewQuestion(some: string) {
+    let options = {
       body: some,
-      icon: "../assets/icons/bell.png " 
+      icon: "../assets/icons/bell.png "
     }
-     this._pushNotifications.create('New Question', options).subscribe( 
-        res => console.log(res),
-        err => console.log(err)
+    this._pushNotifications.create('New Question', options).subscribe(
+      res => console.log(res),
+      err => console.log(err)
     );
   }
 
@@ -90,11 +84,11 @@ export class DataService {
   }
 
   getOnlyQuestion(some: string) {
-    if(some==="withAnswerOnly")
-      return this.http.get<asd[]>(this.url + '/question/' + some).pipe(tap(tmp=> this.questionsWithAnswer=tmp));
-    else
-      return this.http.get<asd[]>(this.url + '/question/' + some).pipe(tap(tmp=> this.questionsWithOutAnswer=tmp));
+    return this.http.get<QuestionAndAnswer[]>(this.url + '/question/' + some).pipe(tap(tmp => this.questionsWithAnswer = tmp));
+  }
 
+  getQuestionAndAnswer(some: string) {
+    return this.http.get<QuestionAndAnswer[]>(this.url + '/question/' + some).pipe(tap(tmp => this.questionsWithOutAnswer = tmp));
   }
 
   createQandA(qanda: QuestionAndAnswer) {

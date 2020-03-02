@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataService } from './data.service';
 import { QuestionAndAnswer } from './QuestionAndAnswer';
-import { interval, Subscription } from 'rxjs'
-import { HubConnection, HubConnectionBuilder  } from '@aspnet/signalr'
-import { PushNotificationsService} from 'ng-push';
+import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr'
+import { PushNotificationsService } from 'ng-push';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -21,19 +20,19 @@ export class AppComponent implements OnInit, OnDestroy {
     this.dataService.loadQAndA();
     this.dataService.intervalTimer();
 
-    this.hubConnection= new HubConnectionBuilder().withUrl("/echo").build();
-    this.hubConnection.on('send', data=> {this.dataService.questionsWithOutAnswer.push(data);});
-    this.hubConnection.start().then(()=>console.log('Connected echo'));
+    this.hubConnection = new HubConnectionBuilder().withUrl("/echo").build();
+    this.hubConnection.on('send', (data: QuestionAndAnswer) => { this.dataService.questionsWithOutAnswer.push(data); this.dataService.notifyNewQuestion(data.Question); });
+    this.hubConnection.start().then(() => console.log('Connected echo'));
 
-    this.hubConnection2= new HubConnectionBuilder().withUrl("/echo2").build();
-    this.hubConnection2.on('send2', data=> {
-      console.log(data);
-      this.dataService.questionsWithAnswer.push(data); 
-      this.dataService.tmp=data;  
-      this.dataService.questionsWithOutAnswer.splice(this.dataService.questionsWithOutAnswer.map(e=>e.id).indexOf(this.dataService.tmp.id),1);
-     });
-    this.hubConnection2.start().then(()=>console.log('Connected echo2'));
-    
+    this.hubConnection2 = new HubConnectionBuilder().withUrl("/echo2").build();
+    this.hubConnection2.on('send2', (data: QuestionAndAnswer) => {
+      this.dataService.notifyNewAnswer(data.Question + '\n' + data.Answer);
+      this.dataService.questionsWithAnswer.push(data);
+      this.dataService.tmp = data;
+      this.dataService.questionsWithOutAnswer.splice(this.dataService.questionsWithOutAnswer.map(e => e.id).indexOf(this.dataService.tmp.id), 1);
+    });
+    this.hubConnection2.start().then(() => console.log('Connected echo2'));
+
   }
   ngOnDestroy() {
     if (this.dataService.intervalSub) {
@@ -42,14 +41,14 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   public saveAnswer() {
     this.dataService.updateQandA(this.dataService.answeredQuestion)
-        .subscribe(data => {this.hubConnection2.invoke('Echo2', data);});
-  
+      .subscribe(data => { this.hubConnection2.invoke('Echo2', data); });
+
     this.questionMode = !this.questionMode;
     this.dataService.intervalTimer();
   }
   public saveQuestion() {
-      this.dataService.createQandA(this.dataService.question)
-        .subscribe((data: QuestionAndAnswer) => this.hubConnection.invoke('Echo', data));
+    this.dataService.createQandA(this.dataService.question)
+      .subscribe((data: QuestionAndAnswer) => this.hubConnection.invoke('Echo', data));
     this.tableMode = !this.tableMode;
   }
   public giveAnswer(p: number) {
@@ -57,7 +56,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.questionMode = !this.questionMode;
 
     if (this.questionMode) {
-      if (this.dataService.intervalSub) 
+      if (this.dataService.intervalSub)
         this.dataService.intervalSub.unsubscribe();
     }
     else {

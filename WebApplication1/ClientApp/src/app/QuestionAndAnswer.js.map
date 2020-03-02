@@ -1,1 +1,1 @@
-{"version":3,"file":"QuestionAndAnswer.js","sourceRoot":"","sources":["QuestionAndAnswer.ts"],"names":[],"mappings":";;AAAA;IACI,2BACW,EAAW,EACX,QAAiB,EACjB,MAAe;QAFf,OAAE,GAAF,EAAE,CAAS;QACX,aAAQ,GAAR,QAAQ,CAAS;QACjB,WAAM,GAAN,MAAM,CAAS;IAAI,CAAC;IACnC,wBAAC;AAAD,CAAC,AALD,IAKC;AALY,8CAAiB"}
+{"version":3,"file":"QuestionAndAnswer.js","sourceRoot":"","sources":["QuestionAndAnswer.ts"],"names":[],"mappings":";;AAAA;IAAA;IAIA,CAAC;IAAD,wBAAC;AAAD,CAAC,AAJD,IAIC;AAJY,8CAAiB"}
