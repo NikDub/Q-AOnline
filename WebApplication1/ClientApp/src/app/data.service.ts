@@ -68,7 +68,7 @@ export class DataService {
 
 
   public intervalTimer() {
-    this.intervalSub = interval(1000).subscribe(() => this.getQuestionInterval());
+    this.intervalSub = interval(10000).subscribe(() => this.getQuestionInterval());
   }
   private getQuestionInterval() {
     if (this.num == this.questionsWithOutAnswer.length - 1) {

@@ -21,12 +21,16 @@ export class AppComponent implements OnInit, OnDestroy {
     this.dataService.intervalTimer();
 
     this.hubConnection = new HubConnectionBuilder().withUrl("/echo").build();
-    this.hubConnection.on('send', (data: QuestionAndAnswer) => { this.dataService.questionsWithOutAnswer.push(data); this.dataService.notifyNewQuestion(data.Question); });
+    this.hubConnection.on('send', (data: QuestionAndAnswer) => { 
+      console.log(data.question); 
+      this.dataService.questionsWithOutAnswer.push(data); 
+      this.dataService.notifyNewQuestion(data.question);
+    });
     this.hubConnection.start().then(() => console.log('Connected echo'));
 
     this.hubConnection2 = new HubConnectionBuilder().withUrl("/echo2").build();
     this.hubConnection2.on('send2', (data: QuestionAndAnswer) => {
-      this.dataService.notifyNewAnswer(data.Question + '\n' + data.Answer);
+      this.dataService.notifyNewAnswer(data.question + '\n' + data.answer);
       this.dataService.questionsWithAnswer.push(data);
       this.dataService.tmp = data;
       this.dataService.questionsWithOutAnswer.splice(this.dataService.questionsWithOutAnswer.map(e => e.id).indexOf(this.dataService.tmp.id), 1);
